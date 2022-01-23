@@ -13,7 +13,7 @@ app.get('/', (req, res) => {
 
 app.get('/db', (req, res) => {
   db
-    .query("SELECT * FROM test")
+    .query("SELECT * FROM project")
     .then(response => res.send(response.rows))
     .catch(e => {
       console.error(e.stack)
