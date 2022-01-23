@@ -1,0 +1,28 @@
+{
+  "name": "fantasy-football-express-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon ./server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ViniBjazevich/fantasy-football-express-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ViniBjazevich/fantasy-football-express-server/issues"
+  },
+  "homepage": "https://github.com/ViniBjazevich/fantasy-football-express-server#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.2",
+    "nodemon": "^2.0.15",
+    "pg": "^8.7.1"
+  },
+  "engines": {
+    "node": "16.13.2"
+  }
+}
