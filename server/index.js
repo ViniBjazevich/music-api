@@ -53,9 +53,6 @@ app.delete('/', (req, res) => {
   name = name.replace(/\'/g,`''`)
   artist = artist.replace(/\'/g,`''`)
 
-  DELETE FROM table
-WHERE condition;
-
   db
     .query(`DELETE FROM project WHERE artist = '${artist}' AND name = '${name}'`)
     .then(data => res.send(`${name} by ${artist} was successfully deleted from the database.`))
