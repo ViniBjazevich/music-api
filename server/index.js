@@ -8,6 +8,7 @@ const port = 5000
 app.use(cors())
 app.use(express.json())
 
+
 app.get('/', (req, res) => {
   const query = `SELECT * FROM project`
 
@@ -20,14 +21,26 @@ app.get('/', (req, res) => {
     })
 })
 
+
 app.get('/:name/:artist', (req, res) => {
   let {name, artist} = req.params;
+  let query;
 
   name = name.replace(/\'/g,`''`)
   artist = artist.replace(/\'/g,`''`)
 
+  if (name === 'empty' && artist === 'empty') {
+    query = `SELECT * FROM project`
+  } else if (name === 'empty') {
+    query = `SELECT * FROM project WHERE artist = '${artist}'`
+  } else if (artist === 'empty') {
+    query = `SELECT * FROM project WHERE name = '${name}'`
+  } else {
+    query = `SELECT * FROM project WHERE name = '${name}' AND artist = '${artist}'`
+  }
+
   db
-    .query(`SELECT * FROM project WHERE artist = '${artist}' AND name = '${name}'`)
+    .query(query)
     .then(data => res.send(data.rows))
     .catch(e => {
       console.error(e.stack)
@@ -54,6 +67,7 @@ app.post('/', (req, res) => {
       res.send(e.stack)
     })
 })
+
 
 app.put('/:id', (req, res) => {
   let {name, artist, riaa, first_week_sales, release_date, streams, genre, project_type} = req.body;
@@ -84,20 +98,6 @@ app.put('/:id', (req, res) => {
     })
 })
 
-// app.delete('/:name/:artist', (req, res) => {
-//   let {name, artist} = req.params;
-
-//   name = name.replace(/\'/g,`''`)
-//   artist = artist.replace(/\'/g,`''`)
-
-//   db
-//     .query(`DELETE FROM project WHERE artist = '${artist}' AND name = '${name}'`)
-//     .then(data => res.send(`${name} by ${artist} was successfully deleted from the database.`))
-//     .catch(e => {
-//       console.error(e.stack)
-//       res.send(e.stack)
-//     })
-// })
 
 app.delete('/:id', (req, res) => {
   const {id} = req.params;
