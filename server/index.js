@@ -55,8 +55,9 @@ app.post('/', (req, res) => {
     })
 })
 
-app.put('/', (req, res) => {
+app.put('/:id', (req, res) => {
   let {name, artist, riaa, first_week_sales, release_date, streams, genre, project_type} = req.body;
+  const {id} = req.params;
 
   name = name.replace(/\'/g,`''`)
   artist = artist.replace(/\'/g,`''`)
@@ -72,7 +73,7 @@ app.put('/', (req, res) => {
                     genre = '${genre}',
                     project_type = '${project_type}'
                   WHERE
-                    artist = '${artist}' AND name = '${name}'`
+                    id = ${id}`
 
   db
     .query(query)
@@ -99,7 +100,7 @@ app.put('/', (req, res) => {
 // })
 
 app.delete('/:id', (req, res) => {
-  let {id} = req.params;
+  const {id} = req.params;
 
   db
     .query(`DELETE FROM project WHERE id = ${id}`)
