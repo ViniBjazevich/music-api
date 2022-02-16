@@ -47,6 +47,24 @@ app.get('/allArtistsInGenre/:genre', (req, res) => {
     })
 })
 
+
+app.get('/projectsByArtist/:artist', (req, res) => {
+  let {artist} = req.params;
+  artist = artist.replace(/\'/g,`''`)
+  const query = `SELECT * FROM project WHERE artist = '${artist}'`
+
+  console.log('Artist')
+
+  db
+    .query(query)
+    .then(data => res.send(data.rows))
+    .catch(e => {
+      console.error(e.stack)
+      res.send(e.stack)
+    })
+})
+
+
 app.get('/:name/:artist', (req, res) => {
   let {name, artist} = req.params;
   let query;
