@@ -9,7 +9,7 @@ app.use(cors())
 app.use(express.json())
 
 
-app.get('/', (req, res) => {
+app.get('/allProjects', (req, res) => {
   const query = `SELECT * FROM project`
 
   db
@@ -21,8 +21,7 @@ app.get('/', (req, res) => {
     })
 })
 
-
-app.get('/:genre'), (req, res) => {
+app.get('/projectByGenre/:genre', (req, res) => {
   const {genre} = req.params;
   const query = `SELECT * FROM project WHERE genre = '${genre}'`
 
@@ -33,8 +32,7 @@ app.get('/:genre'), (req, res) => {
       console.error(e.stack)
       res.send(e.stack)
     })
-}
-
+})
 
 app.get('/:name/:artist', (req, res) => {
   let {name, artist} = req.params;
