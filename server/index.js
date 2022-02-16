@@ -34,6 +34,19 @@ app.get('/projectByGenre/:genre', (req, res) => {
     })
 })
 
+app.get('/allArtistsInGenre/:genre', (req, res) => {
+  const {genre} = req.params;
+  const query = `SELECT DISTINCT artist FROM project WHERE genre = '${genre}';`
+
+  db
+    .query(query)
+    .then(data => res.send(data.rows))
+    .catch(e => {
+      console.error(e.stack)
+      res.send(e.stack)
+    })
+})
+
 app.get('/:name/:artist', (req, res) => {
   let {name, artist} = req.params;
   let query;
