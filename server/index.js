@@ -53,8 +53,6 @@ app.get('/projectsByArtist/:artist', (req, res) => {
   artist = artist.replace(/\'/g,`''`)
   const query = `SELECT * FROM project WHERE artist = '${artist}'`
 
-  console.log('Artist')
-
   db
     .query(query)
     .then(data => res.send(data.rows))
