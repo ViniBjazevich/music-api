@@ -22,6 +22,20 @@ app.get('/', (req, res) => {
 })
 
 
+app.get('/:genre'), (req, res) => {
+  const {genre} = req.params;
+  const query = `SELECT * FROM project WHERE genre = '${genre}'`
+
+  db
+    .query(query)
+    .then(data => res.send(data.rows))
+    .catch(e => {
+      console.error(e.stack)
+      res.send(e.stack)
+    })
+}
+
+
 app.get('/:name/:artist', (req, res) => {
   let {name, artist} = req.params;
   let query;
