@@ -96,16 +96,24 @@ app.post('/', (req, res) => {
   name = name.replace(/\'/g,`''`)
   artist = artist.replace(/\'/g,`''`)
 
-  const query = `INSERT INTO project
-    (name, artist, riaa, first_week_sales, streams, release_date, genre, project_type)
-    VALUES ('${name}', '${artist}', ${riaa}, ${first_week_sales}, ${streams}, ${release_date}, '${genre}', '${project_type}')`
+  const getIdQuery = 'SELECT id FROM project ORDER BY id DESC LIMIT 1'
 
   db
-    .query(query)
-    .then(data => res.send(`${name} by ${artist} was successfully added to the database.`))
-    .catch(e => {
-      console.error(e.stack)
-      res.send(e.stack)
+    .query(getIdQuery)
+    .then(data => {
+      const id = data?.rows[0]?.id + 1
+
+      const insertQuery = `INSERT INTO project
+      (id, name, artist, riaa, first_week_sales, streams, release_date, genre, project_type)
+      VALUES (${id}, '${name}', '${artist}', ${riaa}, ${first_week_sales}, ${streams}, ${release_date}, '${genre}', '${project_type}')`
+
+      db
+        .query(insertQuery)
+        .then(data => res.send(`${name} by ${artist} was successfully added to the database.`))
+        .catch(e => {
+          console.error(e.stack)
+          res.send(e.stack)
+        })
     })
 })
 
