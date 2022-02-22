@@ -1,5 +1,5 @@
 const express = require('express')
-const db = require('../database/index')
+const {createConnection, endConnection} = require('../database/index')
 const app = express()
 const cors = require('cors')
 const { response } = require('express')
@@ -9,61 +9,78 @@ app.use(cors())
 app.use(express.json())
 
 
-app.get('/allProjects', (req, res) => {
+app.get('/allProjects', async (req, res) => {
+  const db = createConnection()
   const query = `SELECT * FROM project`
 
-  db
-    .query(query)
-    .then(data => res.send(data.rows))
-    .catch(e => {
-      console.error(e.stack)
-      res.send(e.stack)
-    })
+  try {
+    const results = await db.query(query)
+
+    res.send(results.rows)
+  } catch (e) {
+    console.error(e.stack)
+    res.send(e.stack)
+  }
+
+  endConnection(db)
 })
 
-app.get('/projectByGenre/:genre', (req, res) => {
+app.get('/projectByGenre/:genre', async (req, res) => {
+  const db = createConnection()
   const {genre} = req.params;
   const query = `SELECT * FROM project WHERE genre = '${genre}'`
 
-  db
-    .query(query)
-    .then(data => res.send(data.rows))
-    .catch(e => {
-      console.error(e.stack)
-      res.send(e.stack)
-    })
+  try {
+    const results = await db.query(query)
+
+    res.send(results.rows)
+  } catch (e) {
+    console.error(e.stack)
+    res.send(e.stack)
+  }
+
+  endConnection(db)
 })
 
-app.get('/allArtistsInGenre/:genre', (req, res) => {
+app.get('/allArtistsInGenre/:genre', async (req, res) => {
+  const db = createConnection()
   const {genre} = req.params;
   const query = `SELECT DISTINCT artist FROM project WHERE genre = '${genre}';`
 
-  db
-    .query(query)
-    .then(data => res.send(data.rows))
-    .catch(e => {
-      console.error(e.stack)
-      res.send(e.stack)
-    })
+  try {
+    const results = await db.query(query)
+
+    res.send(results.rows)
+  } catch (e) {
+    console.error(e.stack)
+    res.send(e.stack)
+  }
+
+  endConnection(db)
 })
 
 
-app.get('/projectsByArtist/:artist', (req, res) => {
+app.get('/projectsByArtist/:artist', async (req, res) => {
+  const db = createConnection()
   let {artist} = req.params;
   artist = artist.replace(/\'/g,`''`)
   const query = `SELECT * FROM project WHERE artist = '${artist}'`
 
-  db
-    .query(query)
-    .then(data => res.send(data.rows))
-    .catch(e => {
-      console.error(e.stack)
-      res.send(e.stack)
-    })
+  try {
+    const results = await db.query(query)
+
+    res.send(results.rows)
+  } catch (e) {
+    console.error(e.stack)
+    res.send(e.stack)
+  }
+
+  endConnection(db)
 })
 
 
-app.get('/:name/:artist', (req, res) => {
+app.get('/:name/:artist', async (req, res) => {
+  const db = createConnection()
   let {name, artist} = req.params;
   let query;
 
@@ -80,17 +97,21 @@ app.get('/:name/:artist', (req, res) => {
     query = `SELECT * FROM project WHERE name = '${name}' AND artist = '${artist}'`
   }
 
-  db
-    .query(query)
-    .then(data => res.send(data.rows))
-    .catch(e => {
-      console.error(e.stack)
-      res.send(e.stack)
-    })
+  try {
+    const results = await db.query(query)
+
+    res.send(results.rows)
+  } catch (e) {
+    console.error(e.stack)
+    res.send(e.stack)
+  }
+
+  endConnection(db)
 })
 
 
-app.post('/', (req, res) => {
+app.post('/', async (req, res) => {
+  const db = createConnection()
   let {name, artist, riaa, first_week_sales, release_date, streams, genre, project_type} = req.body;
 
   name = name.replace(/\'/g,`''`)
@@ -98,27 +119,28 @@ app.post('/', (req, res) => {
 
   const getIdQuery = 'SELECT id FROM project ORDER BY id DESC LIMIT 1'
 
-  db
-    .query(getIdQuery)
-    .then(data => {
-      const id = data?.rows[0]?.id + 1
+  try {
+    const IDResponse = await db.query(getIdQuery)
+    const id = IDResponse?.rows[0]?.id + 1;
 
-      const insertQuery = `INSERT INTO project
+    const insertQuery = `INSERT INTO project
       (id, name, artist, riaa, first_week_sales, streams, release_date, genre, project_type)
       VALUES (${id}, '${name}', '${artist}', ${riaa}, ${first_week_sales}, ${streams}, ${release_date}, '${genre}', '${project_type}')`
 
-      db
-        .query(insertQuery)
-        .then(data => res.send(`${name} by ${artist} was successfully added to the database.`))
-        .catch(e => {
-          console.error(e.stack)
-          res.send(e.stack)
-        })
-    })
+    const results = await db.query(insertQuery)
+
+    res.send(`${name} by ${artist} was successfully added to the database.`)
+  } catch (e) {
+    console.error(e.stack)
+    res.send(e.stack)
+  }
+
+  endConnection(db)
 })
 
 
-app.put('/:id', (req, res) => {
+app.put('/:id', async (req, res) => {
+  const db = createConnection()
   let {name, artist, riaa, first_week_sales, release_date, streams, genre, project_type} = req.body;
   const {id} = req.params;
 
@@ -138,26 +160,34 @@ app.put('/:id', (req, res) => {
                   WHERE
                     id = ${id}`
 
-  db
-    .query(query)
-    .then(data => res.send(`${name} by ${artist} was successfully updated in the database.`))
-    .catch(e => {
-      console.error(e.stack)
-      res.send(e.stack)
-    })
+  try {
+    const results = await db.query(query)
+
+    res.send(`${name} by ${artist} was successfully updated in the database.`)
+  } catch (e) {
+    console.error(e.stack)
+    res.send(e.stack)
+  }
+
+  endConnection(db)
 })
 
 
-app.delete('/:id', (req, res) => {
+app.delete('/:id', async (req, res) => {
+  const db = createConnection()
   const {id} = req.params;
+  const query = `DELETE FROM project WHERE id = ${id}`
 
-  db
-    .query(`DELETE FROM project WHERE id = ${id}`)
-    .then(data => res.send(`Project successfully deleted from the database.`))
-    .catch(e => {
-      console.error(e.stack)
-      res.send(e.stack)
-    })
+  try {
+    const results = await db.query(query)
+
+    res.send('Project successfully deleted from the database.')
+  } catch (e) {
+    console.error(e.stack)
+    res.send(e.stack)
+  }
+
+  endConnection(db)
 })
 
 app.listen(process.env.PORT || port, () => {

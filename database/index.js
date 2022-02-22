@@ -8,6 +8,15 @@ const elephantSQLCredentials = {
   port: 5432,
 }
 
-const pool = new Pool(elephantSQLCredentials);
+function createConnection() {
+  return pool = new Pool(elephantSQLCredentials);
+}
 
-module.exports = pool;
+async function endConnection(pool) {
+  await pool.end
+}
+
+module.exports = {
+  createConnection,
+  endConnection
+};
