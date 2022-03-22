@@ -3,15 +3,15 @@ const {createConnection, endConnection} = require('../database/index')
 const app = express()
 const cors = require('cors')
 const { response } = require('express')
-const port = 5000
+const port = 5002
 
 app.use(cors())
 app.use(express.json())
 
 
 app.get('/allProjects', async (req, res) => {
-  const db = createConnection()
-  const query = `SELECT * FROM project`
+  const db = await createConnection()
+  const query = `SELECT * FROM projects`
 
   try {
     const results = await db.query(query)
@@ -26,9 +26,9 @@ app.get('/allProjects', async (req, res) => {
 })
 
 app.get('/projectByGenre/:genre', async (req, res) => {
-  const db = createConnection()
+  const db = await createConnection();
   const {genre} = req.params;
-  const query = `SELECT * FROM project WHERE genre = '${genre}'`
+  const query = `SELECT * FROM projects WHERE genre = '${genre}'`
 
   try {
     const results = await db.query(query)
@@ -43,9 +43,9 @@ app.get('/projectByGenre/:genre', async (req, res) => {
 })
 
 app.get('/allArtistsInGenre/:genre', async (req, res) => {
-  const db = createConnection()
+  const db = await createConnection();
   const {genre} = req.params;
-  const query = `SELECT DISTINCT artist FROM project WHERE genre = '${genre}';`
+  const query = `SELECT DISTINCT artist FROM projects WHERE genre = '${genre}';`
 
   try {
     const results = await db.query(query)
@@ -61,10 +61,10 @@ app.get('/allArtistsInGenre/:genre', async (req, res) => {
 
 
 app.get('/projectsByArtist/:artist', async (req, res) => {
-  const db = createConnection()
+  const db = await createConnection();
   let {artist} = req.params;
   artist = artist.replace(/\'/g,`''`)
-  const query = `SELECT * FROM project WHERE artist = '${artist}'`
+  const query = `SELECT * FROM projects WHERE artist = '${artist}'`
 
   try {
     const results = await db.query(query)
@@ -80,7 +80,7 @@ app.get('/projectsByArtist/:artist', async (req, res) => {
 
 
 app.get('/:name/:artist', async (req, res) => {
-  const db = createConnection()
+  const db = await createConnection();
   let {name, artist} = req.params;
   let query;
 
@@ -88,13 +88,13 @@ app.get('/:name/:artist', async (req, res) => {
   artist = artist.replace(/\'/g,`''`)
 
   if (name === 'empty' && artist === 'empty') {
-    query = `SELECT * FROM project`
+    query = `SELECT * FROM projects`
   } else if (name === 'empty') {
-    query = `SELECT * FROM project WHERE artist = '${artist}'`
+    query = `SELECT * FROM projects WHERE artist = '${artist}'`
   } else if (artist === 'empty') {
-    query = `SELECT * FROM project WHERE name = '${name}'`
+    query = `SELECT * FROM projects WHERE name = '${name}'`
   } else {
-    query = `SELECT * FROM project WHERE name = '${name}' AND artist = '${artist}'`
+    query = `SELECT * FROM projects WHERE name = '${name}' AND artist = '${artist}'`
   }
 
   try {
@@ -111,19 +111,19 @@ app.get('/:name/:artist', async (req, res) => {
 
 
 app.post('/', async (req, res) => {
-  const db = createConnection()
+  const db = await createConnection();
   let {name, artist, riaa, first_week_sales, release_date, streams, genre, project_type} = req.body;
 
   name = name.replace(/\'/g,`''`)
   artist = artist.replace(/\'/g,`''`)
 
-  const getIdQuery = 'SELECT id FROM project ORDER BY id DESC LIMIT 1'
+  const getIdQuery = 'SELECT id FROM projects ORDER BY id DESC LIMIT 1'
 
   try {
     const IDResponse = await db.query(getIdQuery)
     const id = IDResponse?.rows[0]?.id + 1;
 
-    const insertQuery = `INSERT INTO project
+    const insertQuery = `INSERT INTO projects
       (id, name, artist, riaa, first_week_sales, streams, release_date, genre, project_type)
       VALUES (${id}, '${name}', '${artist}', ${riaa}, ${first_week_sales}, ${streams}, ${release_date}, '${genre}', '${project_type}')`
 
@@ -140,14 +140,14 @@ app.post('/', async (req, res) => {
 
 
 app.put('/:id', async (req, res) => {
-  const db = createConnection()
+  const db = await createConnection();
   let {name, artist, riaa, first_week_sales, release_date, streams, genre, project_type} = req.body;
   const {id} = req.params;
 
   name = name.replace(/\'/g,`''`)
   artist = artist.replace(/\'/g,`''`)
 
-  const query = `UPDATE project
+  const query = `UPDATE projects
                   SET
                     name = '${name}',
                     artist = '${artist}',
@@ -174,9 +174,9 @@ app.put('/:id', async (req, res) => {
 
 
 app.delete('/:id', async (req, res) => {
-  const db = createConnection()
+  const db = await createConnection();
   const {id} = req.params;
-  const query = `DELETE FROM project WHERE id = ${id}`
+  const query = `DELETE FROM projects WHERE id = ${id}`
 
   try {
     const results = await db.query(query)

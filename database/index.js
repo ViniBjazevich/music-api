@@ -1,22 +1,20 @@
-const { Pool, Client } = require("pg");
+const { Pool } = require("pg");
 
-const elephantSQLCredentials = {
-  user: "gevrofht",
-  host: "kashin.db.elephantsql.com",
-  database: "gevrofht",
-  password: "i40NAvdQRdWeCchb1FLulR5naQH2y-EF",
-  port: 5432,
+const connectionString = `postgresql://vini:cSgX65Afh5XGSm92bNsQnQ@free-tier4.aws-us-west-2.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full&options=--cluster%3Dvanzari-2603`;
+
+async function createConnection() {
+  const pool = new Pool({
+    connectionString,
+    allowExitOnIdle: true,
+  });
+  return await pool.connect();
 }
 
-function createConnection() {
-  return pool = new Pool(elephantSQLCredentials);
-}
-
-async function endConnection(pool) {
-  await pool.end
+function endConnection(db) {
+  db.release();
 }
 
 module.exports = {
   createConnection,
-  endConnection
+  endConnection,
 };
