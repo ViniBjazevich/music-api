@@ -115,17 +115,12 @@ app.post('/', async (req, res) => {
   let {name, artist, riaa, first_week_sales, release_date, streams, genre, project_type} = req.body;
 
   name = name.replace(/\'/g,`''`)
-  artist = artist.replace(/\'/g,`''`)
-
-  const getIdQuery = 'SELECT id FROM projects ORDER BY id DESC LIMIT 1'
+  artist = artist.replace(/\'/g, `''`)
 
   try {
-    const IDResponse = await db.query(getIdQuery)
-    const id = IDResponse?.rows[0]?.id + 1;
-
     const insertQuery = `INSERT INTO projects
-      (id, name, artist, riaa, first_week_sales, streams, release_date, genre, project_type)
-      VALUES (${id}, '${name}', '${artist}', ${riaa}, ${first_week_sales}, ${streams}, ${release_date}, '${genre}', '${project_type}')`
+      (name, artist, riaa, first_week_sales, streams, release_date, genre, project_type)
+      VALUES ('${name}', '${artist}', ${riaa}, ${first_week_sales}, ${streams}, ${release_date}, '${genre}', '${project_type}')`
 
     const results = await db.query(insertQuery)
 
