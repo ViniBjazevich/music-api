@@ -8,7 +8,7 @@ const port = 5002;
 app.use(cors());
 app.use(express.json());
 
-const { addBlog } = require("./blog");
+const { addBlog, getAllBlogs, getBlogSections } = require("./blog");
 
 app.get("/allProjects", async (req, res) => {
   const db = await createConnection();
@@ -199,7 +199,11 @@ app.delete("/:id", async (req, res) => {
   endConnection(db);
 });
 
+app.get("/blog", getAllBlogs);
+
 app.post("/blog", addBlog);
+
+app.get("/blogSections/:id", getBlogSections);
 
 app.listen(process.env.PORT || port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

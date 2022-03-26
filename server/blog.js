@@ -3,13 +3,10 @@ const { createConnection, endConnection } = require("../database/index");
 async function addBlog(req, res) {
   const { blog, sections } = req.body;
   const db = await createConnection();
-  console.log('Add blog was hit')
 
   const insertBlog = `INSERT INTO blogs (title, date, image, description)
     VALUES ('${blog.title}', '${blog.date}', '${blog.image}', '${blog.description}')
     RETURNING id;`;
-
-  console.log(insertBlog)
 
   try {
     const result = await db.query(insertBlog);
@@ -32,8 +29,44 @@ async function addBlog(req, res) {
   endConnection(db);
 }
 
+async function getAllBlogs(req, res) {
+  const db = await createConnection();
+  const query = `SELECT * FROM blogs;`;
+
+  try {
+    const result = await db.query(query);
+
+    res.send(result.rows);
+  } catch (e) {
+    console.error(e.stack);
+    res.send(e.stack);
+  }
+
+  endConnection(db);
+}
+
+async function getBlogSections(req, res) {
+  const { id } = req.params;
+  const db = await createConnection();
+  const query = `SELECT * FROM blog_sections
+    WHERE blog_id = ${id};`;
+
+  try {
+    const result = await db.query(query);
+
+    res.send(result.rows);
+  } catch (e) {
+    console.error(e.stack);
+    res.send(e.stack);
+  }
+
+  endConnection(db);
+}
+
 module.exports = {
   addBlog,
+  getAllBlogs,
+  getBlogSections,
 };
 
 // const AlmasData = {
