@@ -100,10 +100,110 @@ async function searchProjectsByNameAndArtist(req, res) {
   endConnection(db);
 }
 
+// --------------------------  POST REQUESTS -----------------------------
+
+async function insertProject(req, res) {
+  const db = await createConnection();
+  let {
+    name,
+    artist,
+    riaa,
+    first_week_sales,
+    release_date,
+    streams,
+    genre,
+    project_type,
+  } = req.body;
+
+  name = name.replace(/\'/g, `''`);
+  artist = artist.replace(/\'/g, `''`);
+
+  try {
+    const insertQuery = `INSERT INTO projects
+      (name, artist, riaa, first_week_sales, streams, release_date, genre, project_type)
+      VALUES ('${name}', '${artist}', ${riaa}, ${first_week_sales}, ${streams}, ${release_date}, '${genre}', '${project_type}')`;
+
+    const results = await db.query(insertQuery);
+
+    res.send(`${name} by ${artist} was successfully added to the database.`);
+  } catch (e) {
+    console.error(e.stack);
+    res.send(e.stack);
+  }
+
+  endConnection(db);
+}
+
+// --------------------------  PUT REQUESTS -----------------------------
+
+async function updateProject(req, res) {
+  const db = await createConnection();
+  let {
+    name,
+    artist,
+    riaa,
+    first_week_sales,
+    release_date,
+    streams,
+    genre,
+    project_type,
+  } = req.body;
+  const { id } = req.params;
+
+  name = name.replace(/\'/g, `''`);
+  artist = artist.replace(/\'/g, `''`);
+
+  const query = `UPDATE projects
+                  SET
+                    name = '${name}',
+                    artist = '${artist}',
+                    riaa = '${riaa}',
+                    first_week_sales = '${first_week_sales}',
+                    streams = '${streams}',
+                    release_date = '${release_date}',
+                    genre = '${genre}',
+                    project_type = '${project_type}'
+                  WHERE
+                    id = ${id}`;
+
+  try {
+    const results = await db.query(query);
+
+    res.send(`${name} by ${artist} was successfully updated in the database.`);
+  } catch (e) {
+    console.error(e.stack);
+    res.send(e.stack);
+  }
+
+  endConnection(db);
+}
+
+// --------------------------  DELETE REQUESTS -----------------------------
+
+async function deleteProject(req, res) {
+  const db = await createConnection();
+  const { id } = req.params;
+  const query = `DELETE FROM projects WHERE id = ${id}`;
+
+  try {
+    const results = await db.query(query);
+
+    res.send("Project successfully deleted from the database.");
+  } catch (e) {
+    console.error(e.stack);
+    res.send(e.stack);
+  }
+
+  endConnection(db);
+}
+
 module.exports = {
   getAllProjects,
   getAllArtistsInGenre,
   getProjectsByArtist,
   getProjectsByGenre,
   searchProjectsByNameAndArtist,
+  insertProject,
+  updateProject,
+  deleteProject,
 };
