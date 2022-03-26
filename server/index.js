@@ -1,5 +1,4 @@
 const express = require("express");
-const { createConnection, endConnection } = require("../database/index");
 const app = express();
 const cors = require("cors");
 const { response } = require("express");
