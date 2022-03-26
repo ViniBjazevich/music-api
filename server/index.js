@@ -25,7 +25,7 @@ app.get("/allArtistsInGenre/:genre", getAllArtistsInGenre);
 
 app.get("/projectsByArtist/:artist", getProjectsByArtist);
 
-app.get("/:name/:artist", searchProjectsByNameAndArtist);
+app.get("/searchProjects/:name/:artist", searchProjectsByNameAndArtist);
 
 app.post("/", async (req, res) => {
   const db = await createConnection();
@@ -118,11 +118,12 @@ app.delete("/:id", async (req, res) => {
   endConnection(db);
 });
 
-app.get("/blogSections/:id", getBlogSections);
 
 app.get("/blog", getAllBlogs);
 
 app.post("/blog", addBlog);
+
+app.get("/sections/:id", getBlogSections);
 
 app.listen(process.env.PORT || port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
