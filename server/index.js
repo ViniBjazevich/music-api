@@ -123,7 +123,7 @@ app.get("/blog", getAllBlogs);
 
 app.post("/blog", addBlog);
 
-app.get("/sections/:id", getBlogSections);
+app.get("/blogSections/:id", getBlogSections);
 
 app.listen(process.env.PORT || port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
