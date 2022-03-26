@@ -29,7 +29,8 @@ async function runQuery(query, secondQuery) {
 // runQuery('Select * from blogs',true);
 // runQuery(queries.insertBlog)
 
-runQuery("Select * from blog_sections WHERE blog_id = 747762719886114817;");
+runQuery(`SELECT * FROM blog_sections
+    WHERE blog_id = 747762719886114817`);
 
 
 

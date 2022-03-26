@@ -8,105 +8,24 @@ const port = 5002;
 app.use(cors());
 app.use(express.json());
 
+const {
+  getAllProjects,
+  getProjectsByArtist,
+  getProjectsByGenre,
+  getAllArtistsInGenre,
+  searchProjectsByNameAndArtist,
+} = require("./project");
 const { addBlog, getAllBlogs, getBlogSections } = require("./blog");
 
-app.get("/allProjects", async (req, res) => {
-  const db = await createConnection();
-  const query = `SELECT * FROM projects`;
+app.get("/allProjects", getAllProjects);
 
-  try {
-    const results = await db.query(query);
+app.get("/projectByGenre/:genre", getProjectsByGenre);
 
-    res.send(results.rows);
-  } catch (e) {
-    console.error(e.stack);
-    res.send(e.stack);
-  }
+app.get("/allArtistsInGenre/:genre", getAllArtistsInGenre);
 
-  endConnection(db);
-});
+app.get("/projectsByArtist/:artist", getProjectsByArtist);
 
-app.get("/projectByGenre/:genre", async (req, res) => {
-  const db = await createConnection();
-  const { genre } = req.params;
-  const query = `SELECT * FROM projects WHERE genre = '${genre}'`;
-
-  try {
-    const results = await db.query(query);
-
-    res.send(results.rows);
-  } catch (e) {
-    console.error(e.stack);
-    res.send(e.stack);
-  }
-
-  endConnection(db);
-});
-
-app.get("/allArtistsInGenre/:genre", async (req, res) => {
-  const db = await createConnection();
-  const { genre } = req.params;
-  const query = `SELECT DISTINCT artist FROM projects WHERE genre = '${genre}';`;
-
-  try {
-    const results = await db.query(query);
-
-    res.send(results.rows);
-  } catch (e) {
-    console.error(e.stack);
-    res.send(e.stack);
-  }
-
-  endConnection(db);
-});
-
-app.get("/projectsByArtist/:artist", async (req, res) => {
-  const db = await createConnection();
-  let { artist } = req.params;
-  artist = artist.replace(/\'/g, `''`);
-  const query = `SELECT * FROM projects WHERE artist = '${artist}'`;
-
-  try {
-    const results = await db.query(query);
-
-    res.send(results.rows);
-  } catch (e) {
-    console.error(e.stack);
-    res.send(e.stack);
-  }
-
-  endConnection(db);
-});
-
-app.get("/:name/:artist", async (req, res) => {
-  const db = await createConnection();
-  let { name, artist } = req.params;
-  let query;
-
-  name = name.replace(/\'/g, `''`);
-  artist = artist.replace(/\'/g, `''`);
-
-  if (name === "empty" && artist === "empty") {
-    query = `SELECT * FROM projects`;
-  } else if (name === "empty") {
-    query = `SELECT * FROM projects WHERE artist = '${artist}'`;
-  } else if (artist === "empty") {
-    query = `SELECT * FROM projects WHERE name = '${name}'`;
-  } else {
-    query = `SELECT * FROM projects WHERE name = '${name}' AND artist = '${artist}'`;
-  }
-
-  try {
-    const results = await db.query(query);
-
-    res.send(results.rows);
-  } catch (e) {
-    console.error(e.stack);
-    res.send(e.stack);
-  }
-
-  endConnection(db);
-});
+app.get("/:name/:artist", searchProjectsByNameAndArtist);
 
 app.post("/", async (req, res) => {
   const db = await createConnection();
@@ -199,11 +118,11 @@ app.delete("/:id", async (req, res) => {
   endConnection(db);
 });
 
+app.get("/blogSections/:id", getBlogSections);
+
 app.get("/blog", getAllBlogs);
 
 app.post("/blog", addBlog);
-
-app.get("/blogSections/:id", getBlogSections);
 
 app.listen(process.env.PORT || port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
