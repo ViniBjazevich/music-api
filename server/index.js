@@ -31,11 +31,11 @@ app.get("/projectsByArtist/:artist", getProjectsByArtist);
 
 app.get("/searchProjects/:name/:artist", searchProjectsByNameAndArtist);
 
-app.post("/", insertProject);
+app.post("/projects", insertProject);
 
-app.put("/:id", updateProject);
+app.put("/projects/:id", updateProject);
 
-app.delete("/:id", deleteProject);
+app.delete("/projects/:id", deleteProject);
 
 // --------------------------  Blog Routes --------------------------
 

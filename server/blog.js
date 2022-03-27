@@ -68,18 +68,3 @@ module.exports = {
   getAllBlogs,
   getBlogSections,
 };
-
-// const AlmasData = {
-//     blog: {
-//         title: 'Blog title'
-//         date: '1997-07-30',
-//         img: 'urlToImage',
-//         description: 'something'
-//     },
-//     sections: [
-//         '<div>First paragraph HTML</div>',
-//         'Eminem',
-//         '<div>Second paragraph HTML</div>',
-//         '<div>Third paragraph HTML</div>',
-//     ]
-// }

@@ -16,8 +16,11 @@ async function runQuery(query) {
   db.release();
 }
 
-runQuery(`SELECT * FROM blog_sections
-    WHERE blog_id = 747762719886114817`);
+// runQuery(`INSERT INTO blogs (title, date, image, description)
+//     VALUES ('Eminem is the best', '2022-05-13', 'https://www.billboard.com/wp-content/uploads/2020/04/eminem-press-photo-2019-aqu-billboard-1548-1587659998.jpg?w=1024', 'Article about Eminem')
+//     RETURNING id;`);
+
+runQuery(`Select * from blogs`)
 
 
 
