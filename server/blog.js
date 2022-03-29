@@ -63,8 +63,30 @@ async function getBlogSections(req, res) {
   endConnection(db);
 }
 
+async function deleteBlog(req, res) {
+  const { id } = req.params;
+  const db = await createConnection();
+  const deleteBlogSections = `DELETE FROM blog_sections
+    WHERE blog_id = ${id};`;
+  const deleteBlog = `DELETE FROM blogs
+    WHERE id = ${id};`;
+
+  try {
+    await db.query(deleteBlogSections);
+    await db.query(deleteBlog);
+
+    res.send('Blog successfully deleted');
+  } catch (e) {
+    console.error(e.stack);
+    res.send(e.stack);
+  }
+
+  endConnection(db);
+}
+
 module.exports = {
   addBlog,
   getAllBlogs,
   getBlogSections,
+  deleteBlog
 };

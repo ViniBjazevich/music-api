@@ -17,7 +17,7 @@ const {
   updateProject,
   deleteProject,
 } = require("./project");
-const { addBlog, getAllBlogs, getBlogSections } = require("./blog");
+const { addBlog, getAllBlogs, getBlogSections, deleteBlog } = require("./blog");
 
 // --------------------------  Projects Routes --------------------------
 
@@ -42,6 +42,8 @@ app.delete("/projects/:id", deleteProject);
 app.get("/blog", getAllBlogs);
 
 app.post("/blog", addBlog);
+
+app.delete("/blog/:id", deleteBlog);
 
 app.get("/blogSections/:id", getBlogSections);
 
