@@ -22,12 +22,46 @@ async function getProjectsByArtist(req, res) {
   const db = await createConnection();
   let { artist } = req.params;
   artist = artist.replace(/\'/g, `''`);
-  const query = `SELECT * FROM projects WHERE artist = '${artist}'`;
+  const query = `SELECT * FROM projects WHERE artist = '${artist}' ORDER BY release_date`;
 
   try {
     const results = await db.query(query);
+    let riaaTotal = 0;
+    let riaaMax = 0;
+    let firstWeekSalesMax = 0;
+    let streamsMax = 0;
 
-    res.send(results.rows);
+    results.rows.forEach((project) => {
+      if (project.project_type === "Studio Album") {
+        let riaa = Number(project.riaa);
+        let sales = Number(project.first_week_sales);
+        let streams = Number(project.streams);
+        riaaTotal += riaa;
+
+        if (riaa > riaaMax) {
+          riaaMax = riaa;
+        }
+
+        if (sales > firstWeekSalesMax) {
+          firstWeekSalesMax = sales;
+        }
+
+        if (streams > streamsMax) {
+          streamsMax = streams;
+        }
+      }
+    })
+
+    const artistData = {
+      name: artist,
+      projects: results.rows,
+      riaaTotal,
+      riaaMax,
+      firstWeekSalesMax,
+      streamsMax
+    };
+
+    res.send(artistData);
   } catch (e) {
     console.error(e.stack);
     res.send(e.stack);
