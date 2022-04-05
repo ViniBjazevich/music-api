@@ -27,7 +27,7 @@ app.get("/projectByGenre/:genre", getProjectsByGenre);
 
 app.get("/allArtistsInGenre/:genre", getAllArtistsInGenre);
 
-app.get("/projectsByArtist/:artist", getProjectsByArtist);
+app.get("/artistInfo/:artist", getProjectsByArtist);
 
 app.get("/searchProjects/:name/:artist", searchProjectsByNameAndArtist);
 
