@@ -6,7 +6,7 @@ In the project directory, you can run:
 
 ### `npm start`
 
-Runs the api.\
+Runs the api.
 
 
 ### `npm run dev`
